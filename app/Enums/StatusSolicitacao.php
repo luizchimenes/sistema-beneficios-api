@@ -15,6 +15,6 @@ enum StatusSolicitacao: string
             self::APROVADA => 'Aprovada',
             self::REJEITADA => 'Rejeitada',
             self::APROVACAO_DUPLA_PENDENTE => 'Aguardanddo Segunda Aprovacao'
-        }
+        };
     }
 }
