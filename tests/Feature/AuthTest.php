@@ -7,10 +7,18 @@ use Tests\TestCase;
 use App\Models\Usuario;
 use App\Enums\TipoUsuario;
 use Illuminate\Support\Facades\Hash;
+use Tymon\JWTAuth\Facades\JWTAuth;
 
 class AuthTest extends TestCase
 {
     use RefreshDatabase;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+        
+        config(['auth.defaults.guard' => 'api']);
+    }
 
     public function test_usuario_pode_fazer_login(): void
     {
@@ -63,7 +71,8 @@ class AuthTest extends TestCase
     public function test_usuario_pode_fazer_logout(): void
     {
         $usuario = Usuario::factory()->create();
-        $token = auth()->login($usuario);
+        
+        $token = JWTAuth::fromUser($usuario);
 
         $response = $this->withHeaders([
             'Authorization' => "Bearer $token"
@@ -73,6 +82,40 @@ class AuthTest extends TestCase
                 ->assertJson([
                     'sucesso' => true,
                     'mensagem' => 'Logout realizado com sucesso'
+                ]);
+    }
+
+    public function test_usuario_pode_acessar_perfil(): void
+    {
+        $usuario = Usuario::factory()->create([
+            'nome' => 'Teste Perfil',
+            'email' => 'perfil@empresa.com'
+        ]);
+        
+        $token = JWTAuth::fromUser($usuario);
+
+        $response = $this->withHeaders([
+            'Authorization' => "Bearer $token"
+        ])->getJson('/api/auth/perfil');
+
+        $response->assertStatus(200)
+                ->assertJson([
+                    'sucesso' => true,
+                    'dados' => [
+                        'nome' => 'Teste Perfil',
+                        'email' => 'perfil@empresa.com'
+                    ]
+                ]);
+    }
+
+    public function test_acesso_sem_token_retorna_401(): void
+    {
+        $response = $this->getJson('/api/auth/perfil');
+
+        $response->assertStatus(401)
+                ->assertJson([
+                    'sucesso' => false,
+                    'mensagem' => 'Token ausente'
                 ]);
     }
 }

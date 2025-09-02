@@ -109,7 +109,7 @@ class SolicitacaoBeneficioController extends Controller
 
     public function pendentesAprovacao(Request $request)
     {
-        $usuario = Auth::user();
+        $usuario = Auth::guard('api')->user;
 
         if (!$usuario->podeAprovar()) {
             return response()->json([

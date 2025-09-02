@@ -9,7 +9,7 @@ enum StatusSolicitacao: string
     case REJEITADA = 'rejeitada';
     case APROVACAO_DUPLA_PENDENTE = 'aprovacao_dupla_pendente';
 
-    public function getLabel(): string {
+    public function label(): string {
         return match ($this) {
             self::PENDENTE => 'Pendente',
             self::APROVADA => 'Aprovada',

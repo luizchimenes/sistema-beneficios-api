@@ -45,7 +45,7 @@ class SolicitacaoBeneficioService
                 $solicitacao->update([
                     'aprovado_por' => $aprovador->id,
                     'aprovado_em' => now(),
-                    'status' => StatusSolicitacao::AGUARDANDO_SEGUNDA_APROVACAO
+                    'status' => StatusSolicitacao::APROVACAO_DUPLA_PENDENTE
                 ]);
             } elseif ($beneficio->requer_aprovacao_dupla && $solicitacao->aprovado_por) {
                 if ($solicitacao->aprovado_por === $aprovador->id) {
@@ -75,7 +75,7 @@ class SolicitacaoBeneficioService
         string $motivo
     ): SolicitacaoBeneficio {
         
-        if (!in_array($solicitacao->status, [StatusSolicitacao::PENDENTE, StatusSolicitacao::AGUARDANDO_SEGUNDA_APROVACAO])) {
+        if (!in_array($solicitacao->status, [StatusSolicitacao::PENDENTE, StatusSolicitacao::APROVACAO_DUPLA_PENDENTE])) {
             throw new \Exception('Solicitação não pode ser rejeitada no status atual');
         }
 
@@ -105,7 +105,7 @@ class SolicitacaoBeneficioService
         $solicitacaoExistente = SolicitacaoBeneficio::where('usuario_id', $usuario->id)
             ->where('beneficio_id', $beneficio->id)
             ->whereBetween('created_at', [$inicioMes, $fimMes])
-            ->whereIn('status', [StatusSolicitacao::PENDENTE, StatusSolicitacao::APROVADA, StatusSolicitacao::AGUARDANDO_SEGUNDA_APROVACAO])
+            ->whereIn('status', [StatusSolicitacao::PENDENTE, StatusSolicitacao::APROVADA, StatusSolicitacao::APROVACAO_DUPLA_PENDENTE])
             ->exists();
 
         if ($solicitacaoExistente) {
@@ -137,7 +137,7 @@ class SolicitacaoBeneficioService
                     if (empty($dados['justificativa'])) {
                         throw new \Exception('Justificativa é obrigatória para este benefício');
                     }
-                    break;
+                    break; 
             }
         }
     }
