@@ -24,6 +24,7 @@ class AuthController extends Controller
             ], 401);
         }
 
+        /** @var Usuario $usuario */
         $usuario = Auth::user();
 
         return response()->json([
@@ -70,6 +71,7 @@ class AuthController extends Controller
 
     public function perfil(): JsonResponse
     {
+        /** @var Usuario $usuario */
         $usuario = Auth::user();
 
         return response()->json([

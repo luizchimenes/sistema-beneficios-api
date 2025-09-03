@@ -8,7 +8,6 @@ use App\Services\SolicitacaoBeneficioService;
 use App\Http\Resources\SolicitacaoBeneficioResource;
 use App\Models\SolicitacaoBeneficio;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class SolicitacaoBeneficioController extends Controller
@@ -17,8 +16,9 @@ class SolicitacaoBeneficioController extends Controller
         private SolicitacaoBeneficioService $solicitacaoService
     ) {}
 
-    public function index(Request $request)
+    public function index()
     {
+        /** @var Usuario $usuario */
         $usuario = Auth::user();
         
         $solicitacoes = SolicitacaoBeneficio::porUsuario($usuario->id)
@@ -93,7 +93,7 @@ class SolicitacaoBeneficioController extends Controller
                 Auth::user(),
                 $request->motivo_rejeicao
             );
-
+ 
             return response()->json([
                 'sucesso' => true,
                 'mensagem' => 'Solicitação rejeitada',
@@ -107,9 +107,10 @@ class SolicitacaoBeneficioController extends Controller
         }
     }
 
-    public function pendentesAprovacao(Request $request)
+    public function pendentesAprovacao()
     {
-        $usuario = Auth::guard('api')->user;
+        /** @var Usuario $usuario */
+        $usuario = Auth::user();
 
         if (!$usuario->podeAprovar()) {
             return response()->json([
