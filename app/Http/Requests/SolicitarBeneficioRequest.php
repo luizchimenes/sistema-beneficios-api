@@ -4,6 +4,16 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
+/**
+ * @OA\Schema(
+ *     schema="SolicitarBeneficioRequest",
+ *     type="object",
+ *     required={"beneficio_id","valor_solicitado"},
+ *     @OA\Property(property="beneficio_id", type="integer", example=2),
+ *     @OA\Property(property="valor_solicitado", type="number", format="float", example=150.50),
+ *     @OA\Property(property="justificativa", type="string", example="Preciso deste benefício para alimentação")
+ * )
+ */
 class SolicitarBeneficioRequest extends FormRequest
 {
     public function authorize(): bool

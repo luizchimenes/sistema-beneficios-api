@@ -1,0 +1,720 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "API Sistema Benefícios",
+        "description": "Documentação da API do Sistema de Benefícios",
+        "contact": {
+            "name": "Luiz Chimenes",
+            "email": "gustavo.chimenesp@gmail.com"
+        },
+        "version": "1.0.0"
+    },
+    "servers": [
+        {
+            "url": "http://localhost:8000",
+            "description": "Servidor local"
+        }
+    ],
+    "paths": {
+        "/api/login": {
+            "post": {
+                "tags": [
+                    "Autenticação"
+                ],
+                "summary": "Realiza o login do usuário",
+                "description": "Autentica um usuário e retorna um token JWT",
+                "operationId": "a3b306d14572d1f4bd6c064b3233e7b8",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "email",
+                                    "senha"
+                                ],
+                                "properties": {
+                                    "email": {
+                                        "type": "string",
+                                        "format": "email",
+                                        "example": "admin@empresa.com"
+                                    },
+                                    "senha": {
+                                        "type": "string",
+                                        "format": "password",
+                                        "example": "123456"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Login realizado com sucesso",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "sucesso": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "mensagem": {
+                                            "type": "string",
+                                            "example": "Login realizado com sucesso"
+                                        },
+                                        "dados": {
+                                            "properties": {
+                                                "token": {
+                                                    "type": "string"
+                                                },
+                                                "tipo_token": {
+                                                    "type": "string",
+                                                    "example": "bearer"
+                                                },
+                                                "expira_em": {
+                                                    "type": "integer",
+                                                    "example": 3600
+                                                },
+                                                "usuario": {
+                                                    "properties": {
+                                                        "id": {
+                                                            "type": "integer",
+                                                            "example": 1
+                                                        },
+                                                        "nome": {
+                                                            "type": "string",
+                                                            "example": "João Silva"
+                                                        },
+                                                        "email": {
+                                                            "type": "string",
+                                                            "example": "joao@empresa.com"
+                                                        },
+                                                        "tipo": {
+                                                            "type": "string",
+                                                            "example": "admin"
+                                                        },
+                                                        "departamento": {
+                                                            "type": "string",
+                                                            "example": "TI"
+                                                        }
+                                                    },
+                                                    "type": "object"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Credenciais inválidas",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "sucesso": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "mensagem": {
+                                            "type": "string",
+                                            "example": "Credenciais inválidas"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/logout": {
+            "post": {
+                "tags": [
+                    "Autenticação"
+                ],
+                "summary": "Realiza logout do usuário",
+                "description": "Invalida o token JWT atual",
+                "operationId": "fe8f3429cd6979b3b4517e186505f9f9",
+                "responses": {
+                    "200": {
+                        "description": "Logout realizado com sucesso",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "sucesso": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "mensagem": {
+                                            "type": "string",
+                                            "example": "Logout realizado com sucesso"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/refresh": {
+            "post": {
+                "tags": [
+                    "Autenticação"
+                ],
+                "summary": "Renova o token JWT",
+                "description": "Retorna um novo token JWT válido",
+                "operationId": "2c27d311a2876560fcb5a754b556cdc5",
+                "responses": {
+                    "200": {
+                        "description": "Token renovado com sucesso",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "sucesso": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "dados": {
+                                            "properties": {
+                                                "token": {
+                                                    "type": "string"
+                                                },
+                                                "tipo_token": {
+                                                    "type": "string",
+                                                    "example": "bearer"
+                                                },
+                                                "expira_em": {
+                                                    "type": "integer",
+                                                    "example": 3600
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/perfil": {
+            "get": {
+                "tags": [
+                    "Autenticação"
+                ],
+                "summary": "Retorna informações do usuário logado",
+                "description": "Retorna os dados do perfil do usuário autenticado",
+                "operationId": "f812ecf7f6db8245b4a29a8f216c0c16",
+                "responses": {
+                    "200": {
+                        "description": "Dados do usuário retornados com sucesso",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "sucesso": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "dados": {
+                                            "properties": {
+                                                "id": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "nome": {
+                                                    "type": "string",
+                                                    "example": "João Silva"
+                                                },
+                                                "email": {
+                                                    "type": "string",
+                                                    "example": "joao@empresa.com"
+                                                },
+                                                "tipo": {
+                                                    "type": "string",
+                                                    "example": "admin"
+                                                },
+                                                "departamento": {
+                                                    "type": "string",
+                                                    "example": "TI"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/beneficios": {
+            "get": {
+                "tags": [
+                    "Benefícios"
+                ],
+                "summary": "Lista todos os benefícios ativos",
+                "description": "Retorna uma lista paginada de benefícios ativos",
+                "operationId": "56e64cafbce35f1b68dac47452137199",
+                "responses": {
+                    "200": {
+                        "description": "Lista de benefícios retornada com sucesso",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/Beneficio"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/beneficios/{id}": {
+            "get": {
+                "tags": [
+                    "Benefícios"
+                ],
+                "summary": "Exibe um benefício específico",
+                "description": "Retorna os dados de um benefício específico pelo ID",
+                "operationId": "f2c1e826db4cdbfca69db79754e2debf",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID do benefício",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Benefício retornado com sucesso",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Beneficio"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Benefício não encontrado",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "sucesso": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "mensagem": {
+                                            "type": "string",
+                                            "example": "Benefício não encontrado"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/solicitacoes": {
+            "get": {
+                "tags": [
+                    "Solicitação de Benefícios"
+                ],
+                "summary": "Lista solicitações do usuário logado",
+                "operationId": "6f9382fb894223e03bca4cd26ecd7ce5",
+                "responses": {
+                    "200": {
+                        "description": "Solicitações retornadas com sucesso",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/SolicitacaoBeneficio"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Solicitação de Benefícios"
+                ],
+                "summary": "Cria uma nova solicitação de benefício",
+                "operationId": "55be4530283a77781b0580c0d9d70fb6",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/SolicitarBeneficioRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Solicitação criada com sucesso",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/SolicitacaoBeneficio"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Erro de validação ou regra de negócio"
+                    }
+                }
+            }
+        },
+        "/api/solicitacoes/{id}": {
+            "get": {
+                "tags": [
+                    "Solicitação de Benefícios"
+                ],
+                "summary": "Exibe uma solicitação específica",
+                "operationId": "059ccfebe7c76c7b43cfb32f25f00dc4",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID da solicitação",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Solicitação retornada com sucesso",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/SolicitacaoBeneficio"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Solicitação não encontrada"
+                    }
+                }
+            }
+        },
+        "/api/solicitacoes/{id}/aprovar": {
+            "post": {
+                "tags": [
+                    "Solicitação de Benefícios"
+                ],
+                "summary": "Aprova uma solicitação de benefício",
+                "operationId": "51819f8ecc80cbf761bc2852ecf595f7",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": false,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/AprovarSolicitacaoRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Solicitação aprovada com sucesso",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/SolicitacaoBeneficio"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Erro de validação ou regra de negócio"
+                    },
+                    "403": {
+                        "description": "Acesso negado"
+                    }
+                }
+            }
+        },
+        "/api/solicitacoes/{id}/rejeitar": {
+            "post": {
+                "tags": [
+                    "Solicitação de Benefícios"
+                ],
+                "summary": "Rejeita uma solicitação de benefício",
+                "operationId": "62b98c5ffe6c434d3f46e5180c80d64b",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": false,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/AprovarSolicitacaoRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Solicitação rejeitada",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/SolicitacaoBeneficio"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Erro de validação ou regra de negócio"
+                    },
+                    "403": {
+                        "description": "Acesso negado"
+                    }
+                }
+            }
+        },
+        "/api/solicitacoes/pendentes-aprovacao": {
+            "get": {
+                "tags": [
+                    "Solicitação de Benefícios"
+                ],
+                "summary": "Lista solicitações pendentes de aprovação para o usuário",
+                "operationId": "e75a836675e8d3687ed2262c096e238f",
+                "responses": {
+                    "200": {
+                        "description": "Solicitações pendentes retornadas com sucesso",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/SolicitacaoBeneficio"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Acesso negado"
+                    }
+                }
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "AprovarSolicitacaoRequest": {
+                "properties": {
+                    "observacoes": {
+                        "type": "string",
+                        "example": "Aprovado pelo gestor"
+                    },
+                    "motivo_rejeicao": {
+                        "type": "string",
+                        "example": "Documento incompleto"
+                    }
+                },
+                "type": "object"
+            },
+            "LoginRequest": {
+                "required": [
+                    "email",
+                    "senha"
+                ],
+                "properties": {
+                    "email": {
+                        "description": "Email do usuário",
+                        "type": "string",
+                        "format": "email",
+                        "example": "admin@empresa.com"
+                    },
+                    "senha": {
+                        "description": "Senha do usuário",
+                        "type": "string",
+                        "format": "password",
+                        "example": "123456"
+                    }
+                },
+                "type": "object"
+            },
+            "SolicitarBeneficioRequest": {
+                "required": [
+                    "beneficio_id",
+                    "valor_solicitado"
+                ],
+                "properties": {
+                    "beneficio_id": {
+                        "type": "integer",
+                        "example": 2
+                    },
+                    "valor_solicitado": {
+                        "type": "number",
+                        "format": "float",
+                        "example": 150.5
+                    },
+                    "justificativa": {
+                        "type": "string",
+                        "example": "Preciso deste benefício para alimentação"
+                    }
+                },
+                "type": "object"
+            },
+            "Beneficio": {
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "nome": {
+                        "type": "string",
+                        "example": "Vale Refeição"
+                    },
+                    "descricao": {
+                        "type": "string",
+                        "example": "Benefício de refeição para funcionários"
+                    },
+                    "valor_maximo": {
+                        "type": "number",
+                        "format": "float",
+                        "example": 500
+                    },
+                    "ativo": {
+                        "type": "boolean",
+                        "example": true
+                    },
+                    "criado_em": {
+                        "type": "string",
+                        "example": "2025-09-02 23:01:05"
+                    },
+                    "atualizado_em": {
+                        "type": "string",
+                        "example": "2025-09-02 23:01:05"
+                    }
+                },
+                "type": "object"
+            },
+            "SolicitacaoBeneficio": {
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "beneficio_id": {
+                        "type": "integer",
+                        "example": 2
+                    },
+                    "usuario_id": {
+                        "type": "integer",
+                        "example": 5
+                    },
+                    "valor_solicitado": {
+                        "type": "number",
+                        "format": "float",
+                        "example": 150.5
+                    },
+                    "justificativa": {
+                        "type": "string",
+                        "example": "Preciso deste benefício para alimentação"
+                    },
+                    "status": {
+                        "type": "string",
+                        "example": "pendente"
+                    },
+                    "criado_em": {
+                        "type": "string",
+                        "example": "2025-09-02 23:01:05"
+                    },
+                    "atualizado_em": {
+                        "type": "string",
+                        "example": "2025-09-02 23:01:05"
+                    }
+                },
+                "type": "object"
+            }
+        }
+    },
+    "tags": [
+        {
+            "name": "Autenticação",
+            "description": "Autenticação"
+        },
+        {
+            "name": "Benefícios",
+            "description": "Benefícios"
+        },
+        {
+            "name": "Solicitação de Benefícios",
+            "description": "Solicitação de Benefícios"
+        }
+    ]
+}

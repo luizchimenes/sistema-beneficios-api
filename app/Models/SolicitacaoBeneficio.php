@@ -6,6 +6,20 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Enums\StatusSolicitacao;
 
+/**
+ * @OA\Schema(
+ *     schema="SolicitacaoBeneficio",
+ *     type="object",
+ *     @OA\Property(property="id", type="integer", example=1),
+ *     @OA\Property(property="beneficio_id", type="integer", example=2),
+ *     @OA\Property(property="usuario_id", type="integer", example=5),
+ *     @OA\Property(property="valor_solicitado", type="number", format="float", example=150.50),
+ *     @OA\Property(property="justificativa", type="string", example="Preciso deste benefício para alimentação"),
+ *     @OA\Property(property="status", type="string", example="pendente"),
+ *     @OA\Property(property="criado_em", type="string", example="2025-09-02 23:01:05"),
+ *     @OA\Property(property="atualizado_em", type="string", example="2025-09-02 23:01:05")
+ * )
+ */
 class SolicitacaoBeneficio extends Model
 {
     use HasFactory;

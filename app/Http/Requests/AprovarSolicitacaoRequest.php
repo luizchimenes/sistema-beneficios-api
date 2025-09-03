@@ -4,6 +4,15 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
+
+/**
+ * @OA\Schema(
+ *     schema="AprovarSolicitacaoRequest",
+ *     type="object",
+ *     @OA\Property(property="observacoes", type="string", example="Aprovado pelo gestor"),
+ *     @OA\Property(property="motivo_rejeicao", type="string", example="Documento incompleto")
+ * )
+ */
 class AprovarSolicitacaoRequest extends FormRequest
 {
     public function authorize(): bool
