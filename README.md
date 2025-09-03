@@ -3,14 +3,14 @@
 Sistema desenvolvido em Laravel para gerenciamento de benefícios corporativos, permitindo que colaboradores solicitem diversos tipos de benefícios como vale-alimentação, vale-combustível, convênios e cartões-presente.
 
 ##  Índice
-- [Tecnologias](#-tecnologias)
-- [Funcionalidades](#-funcionalidades)
-- [Instalação](#-instalação)
-- [Configuração](#-configuração)
-- [Como Usar](#-como-usar)
-- [Testes](#-testes)
-- [Documentação API](#-documentação-api)
-- [Documento de Pensamento Crítico](#-documento-de-pensamento-crítico)
+- [Tecnologias](#tecnologias)
+- [Funcionalidades](#funcionalidades)
+- [Instalação](#instalação)
+- [Configuração](#configuração)
+- [Como Usar](#como-usar)
+- [Testes](#testes)
+- [Documentação API](#documentação-api)
+- [Documento de Pensamento Crítico](#documento-de-pensamento-crítico)
 
 ##  Tecnologias
 
