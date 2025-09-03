@@ -2,13 +2,15 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Beneficio;
+use App\Helpers\ApiResponse;
 use App\Http\Resources\BeneficioResource;
+use App\Services\BeneficioService;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
 class BeneficioController extends Controller
 {
+
+    public function __construct(private BeneficioService $service) {}
 
     /**
      * @OA\Get(
@@ -26,13 +28,10 @@ class BeneficioController extends Controller
      *     )
      * )
      */
-    public function index(): AnonymousResourceCollection
+    public function index(): JsonResponse
     {
-        $beneficios = Beneficio::ativos()
-            ->orderBy('nome')
-            ->get();
-
-        return BeneficioResource::collection($beneficios);
+        $beneficios = $this->service->listarAtivos();
+        return ApiResponse::success(BeneficioResource::collection($beneficios)->resolve());
     }
 
     /**
@@ -63,8 +62,14 @@ class BeneficioController extends Controller
      *     )
      * )
      */
-    public function show(Beneficio $beneficio): BeneficioResource
+    public function show(int $id): JsonResponse
     {
-        return new BeneficioResource($beneficio);
+        $beneficio = $this->service->buscarPorId($id);
+
+        if (!$beneficio) {
+            return ApiResponse::error('Benefício não encontrado', 404);
+        }
+
+        return ApiResponse::success((new BeneficioResource($beneficio))->resolve());
     }
 }

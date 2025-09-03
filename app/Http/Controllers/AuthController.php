@@ -2,14 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\ApiResponse;
 use App\Http\Requests\LoginRequest;
-use App\Models\Usuario;
+use App\Services\AuthService;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Support\Facades\Auth;
-use Tymon\JWTAuth\Facades\JWTAuth;
 
 class AuthController extends Controller
 {
+    public function __construct(private AuthService $authService) {}
     /**
      * @OA\Post(
      *     path="/api/login",
@@ -65,32 +65,13 @@ class AuthController extends Controller
             'password' => $request->senha
         ];
 
-        if (!$token = JWTAuth::attempt($credenciais)) {
-            return response()->json([
-                'sucesso' => false,
-                'mensagem' => 'Credenciais inválidas'
-            ], 401);
+        $resultado = $this->authService->login($credenciais);
+
+        if (!$resultado) {
+            return ApiResponse::error('Credenciais inválidas', 401);
         }
 
-        /** @var Usuario $usuario */
-        $usuario = Auth::user();
-
-        return response()->json([
-            'sucesso' => true,
-            'mensagem' => 'Login realizado com sucesso',
-            'dados' => [
-                'token' => $token,
-                'tipo_token' => 'bearer',
-                'expira_em' => JWTAuth::factory()->getTTL() * 60,
-                'usuario' => [
-                    'id' => $usuario->id,
-                    'nome' => $usuario->nome,
-                    'email' => $usuario->email,
-                    'tipo' => $usuario->tipo->value,
-                    'departamento' => $usuario->departamento
-                ]
-            ]
-        ]);
+        return ApiResponse::success($resultado, 'Login realizado com sucesso');
     }
 
     /**
@@ -112,12 +93,11 @@ class AuthController extends Controller
      */
     public function logout(): JsonResponse
     {
-        JWTAuth::invalidate(JWTAuth::getToken());
+        if (!$this->authService->logout()) {
+            return ApiResponse::error('Não foi possível invalidar o token', 400);
+        }
 
-        return response()->json([
-            'sucesso' => true,
-            'mensagem' => 'Logout realizado com sucesso'
-        ]);
+        return ApiResponse::success([], 'Logout realizado com sucesso');
     }
 
     /**
@@ -145,16 +125,8 @@ class AuthController extends Controller
      */
     public function refresh(): JsonResponse
     {
-        $token = JWTAuth::refresh(JWTAuth::getToken());
-
-        return response()->json([
-            'sucesso' => true,
-            'dados' => [
-                'token' => $token,
-                'tipo_token' => 'bearer',
-                'expira_em' => JWTAuth::factory()->getTTL() * 60
-            ]
-        ]);
+        $resultado = $this->authService->refresh();
+        return ApiResponse::success($resultado, 'Token renovado com sucesso');
     }
 
     /**
@@ -184,18 +156,7 @@ class AuthController extends Controller
      */
     public function perfil(): JsonResponse
     {
-        /** @var Usuario $usuario */
-        $usuario = Auth::user();
-
-        return response()->json([
-            'sucesso' => true,
-            'dados' => [
-                'id' => $usuario->id,
-                'nome' => $usuario->nome,
-                'email' => $usuario->email,
-                'tipo' => $usuario->tipo->value,
-                'departamento' => $usuario->departamento
-            ]
-        ]);
+        $resultado = $this->authService->perfil();
+        return ApiResponse::success($resultado, 'Dados do usuário retornados com sucesso');
     }
 }
